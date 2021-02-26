@@ -561,7 +561,7 @@ void _st_vp_check_clock(void)
 }
 
 
-void st_thread_yield()
+int st_thread_yield()
 {
     _st_thread_t *me = _ST_CURRENT_THREAD();
 
@@ -574,7 +574,7 @@ void st_thread_yield()
 
     // If not thread in RunQ to yield to, ignore and continue to run.
     if (_ST_RUNQ.next == &_ST_RUNQ) {
-        return;
+        return 0; // Not yield.
     }
 
     #if defined(DEBUG) && defined(DEBUG_STATS)
@@ -587,6 +587,8 @@ void st_thread_yield()
 
     // Yield to other threads in the RunQ.
     _ST_SWITCH_CONTEXT(me);
+
+    return 1; // Yes, yield.
 }
 
 
